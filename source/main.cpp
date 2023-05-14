@@ -72,7 +72,7 @@ int main()
 
     sf::Vector2u screenSize(480, 360);
     sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "Coursework");
-    std::vector<TextCircle> shapes;
+    std::vector<TextCircle*> shapes;
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
@@ -85,22 +85,21 @@ int main()
     xb = b_pos.x;
     yb = b_pos.y;
 
-    TextCircle pA("A", BASE_POINT_RADIUS);
-    pA.setPosition(sf::Vector2f(xa, ya));
-    pA.setCircleColor(sf::Color::Red);
+    TextCircle* pA = new TextCircle("A", BASE_POINT_RADIUS);
+    pA->setPosition(sf::Vector2f(xa, ya));
+    pA->setCircleColor(sf::Color::Red);
     shapes.push_back(pA);
 
-    TextCircle pB("B", BASE_POINT_RADIUS);
-    pB.setPosition(sf::Vector2f(xb, yb));
-    pB.setCircleColor(sf::Color::Red);
+    TextCircle* pB = new TextCircle("B", BASE_POINT_RADIUS);
+    pB->setPosition(sf::Vector2f(xb, yb));
+    pB->setCircleColor(sf::Color::Red);
     shapes.push_back(pB);
 
-    for (int i = 1; i <= n; i++) {
-        // std::cin >> x[i] >> y[i] >> w[i];
-        w[i] = rand() % 10;
-        TextCircle shape("A", BASE_POINT_RADIUS);
-        shape.setPosition(getRandomPoint(screenSize, inset));
-        shape.setCircleColor(sf::Color::Yellow);
+    for (int i = 0; i < n; i++) {
+        w[i] = rand() % W;
+        TextCircle* shape = new TextCircle(std::to_string(w[i]), BASE_POINT_RADIUS);
+        shape->setPosition(getRandomPoint(screenSize, inset));
+        shape->setCircleColor(sf::Color::Yellow);
         shapes.push_back(shape);
     }
 
@@ -137,7 +136,7 @@ int main()
     double b = ya - k * xa;
     std::cout << "y = " << k << "x + " << b << std::endl;
 
-    calcDiff(shapes, k, b);
+    // calcDiff(shapes, k, b);
 
     // sf::VertexArray result_line { sf::Vector2f(), sf::Vector2f() }
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
@@ -157,7 +156,7 @@ int main()
 
         window.clear(sf::Color::Blue);
         for (auto& shape : shapes)
-            window.draw(shape);
+            window.draw(*shape);
 
         window.draw(result_line);
         window.display();
