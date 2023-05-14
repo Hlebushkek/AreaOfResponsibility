@@ -1,0 +1,12 @@
+**/bin/
+**/build/
+
+*.log
+
+**.vscode
+
+**.dll
+
+**.exe
+
+**.ini
