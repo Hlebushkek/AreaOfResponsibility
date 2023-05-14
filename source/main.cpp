@@ -11,8 +11,14 @@ const int MAXN = 1000;
 const int MAXW = 1000;
 
 int n, W, xa, ya, xb, yb;
+int algorithmType;
 int x[MAXN + 2], y[MAXN + 2], w[MAXN + 2];
 int dp[MAXN + 2][MAXW + 2][2];
+
+struct Line
+{
+    float k, b;
+};
 
 enum SIDE { LEFT, RIGHT, OVERLAY };
 
@@ -73,6 +79,45 @@ int calcDiff(const std::vector<TextCircle*>& shapes, float k, float b, SIDE onLi
     return abs(left_sum - right_sum);
 }
 
+Line GreedyAlgoithm(TextCircle *pA, TextCircle *pB, std::vector<TextCircle*>& shapes)
+{
+    int bestResult = INT_MAX;
+    Line bestLine { 0, 0 };
+
+    sf::Vector2f midAB = sf::Vector2f(
+        (pA->getPosition().x + pB->getPosition().x) / 2.f,
+        (pA->getPosition().y + pB->getPosition().y) / 2.f
+    );
+
+    std::cout << "A: " << pA->getPosition().x << " " << pA->getPosition().y << std::endl;
+    std::cout << "B: " << pB->getPosition().x << " " << pB->getPosition().y << std::endl;
+    std::cout << "Mid AB: " << midAB.x << " " << midAB.y << std::endl;
+
+    for (auto shape : shapes)
+    {
+        sf::Vector2f pos = shape->getPosition();
+        float k = (pos.y - midAB.y) / (pos.x - midAB.x);
+        float b = midAB.y - k * midAB.x;
+        std::cout << "y = " << k << "x + " << b << std::endl;
+
+        int diff1 = calcDiff(shapes, k, b, SIDE::LEFT);
+        int diff2 = calcDiff(shapes, k, b, SIDE::RIGHT);
+
+        int diff = std::min(diff1, diff2);
+
+        if (diff < bestResult)
+        {
+            bestResult = diff;
+            bestLine.k = k;
+            bestLine.b = b;
+        }
+    }
+
+    std::cout << "Best result: " << bestResult <<
+        "\tline: y = " << bestLine.k << "x + " << bestLine.b << std::endl;
+    return bestLine;
+}
+
 int main()
 {
     srand((unsigned)time(0)); 
@@ -84,6 +129,8 @@ int main()
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
     std::cin >> n >> W;
+
+    std::cin >> algorithmType;
 
     sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
     xa = a_pos.x;
@@ -108,46 +155,25 @@ int main()
         shapes.push_back(shape);
     }
 
-    //Algorithm
-    sf::Vector2f midAB = sf::Vector2f(
-        (pA->getPosition().x + pB->getPosition().x) / 2.f,
-        (pA->getPosition().y + pB->getPosition().y) / 2.f
-    );
+    Line bestLine { 0, 0 };
 
-    std::cout << "A: " << pA->getPosition().x << " " << pA->getPosition().y << std::endl;
-    std::cout << "B: " << pB->getPosition().x << " " << pB->getPosition().y << std::endl;
-    std::cout << "Mid AB: " << midAB.x << " " << midAB.y << std::endl;
-    
-    int bestResult = INT16_MAX;
-    std::pair<float, float> bestLine = std::make_pair(0, 0);
-
-    for (auto shape : shapes)
+    switch (algorithmType)
     {
-        sf::Vector2f pos = shape->getPosition();
-        float k = (pos.y - midAB.y) / (pos.x - midAB.x);
-        float b = midAB.y - k * midAB.x;
-        std::cout << "y = " << k << "x + " << b << std::endl;
-
-        int diff1 = calcDiff(shapes, k, b, SIDE::LEFT);
-        int diff2 = calcDiff(shapes, k, b, SIDE::RIGHT);
-
-        int diff = std::min(diff1, diff2);
-
-        if (diff < bestResult)
-        {
-            bestResult = diff;
-            bestLine = std::make_pair(k, b);
-        }
+    case 0: //Greedy algorithm
+        bestLine = GreedyAlgoithm(pA, pB, shapes);
+    case 1:
+        break;
+    case 2:
+        break;
+    default:
+        break;
     }
-
-    std::cout << "Best result: " << bestResult <<
-        "\tline: y = " << bestLine.first << "x + " << bestLine.second << std::endl;
 
     // sf::VertexArray result_line { sf::Vector2f(), sf::Vector2f() }
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
-    result_line[0].position = sf::Vector2f(0, bestLine.second);
+    result_line[0].position = sf::Vector2f(0, bestLine.b);
     result_line[0].color = sf::Color::Green;
-    result_line[1].position = sf::Vector2f(screenSize.x, bestLine.first * screenSize.x + bestLine.second);
+    result_line[1].position = sf::Vector2f(screenSize.x, bestLine.k * screenSize.x + bestLine.b);
     result_line[1].color = sf::Color::Green;
 
     while (window.isOpen())
