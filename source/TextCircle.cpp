@@ -22,14 +22,21 @@ void TextCircle::setPosition(const sf::Vector2f& position)
     // m_textObj.setPosition(sf::Vector2(m_circle.getRadius(), m_circle.getRadius()));
 }
 
-void TextCircle::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
+void TextCircle::setOrigin(const sf::Vector2f& position)
 {
-    sf::RenderStates modifiedStates = states;
+    sf::Transformable::setOrigin(position);
+    // sf::FloatRect textRect = m_textObj.getLocalBounds();
+    // m_textObj.setOrigin(sf::Vector2f(textRect.left + textRect.width/2.0f,
+    //                     textRect.top  + textRect.height/2.0f));
+    // m_textObj.setPosition(sf::Vector2(m_circle.getRadius(), m_circle.getRadius()));
+}
 
-    modifiedStates.transform *= getTransform();
+void TextCircle::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
 
-    target.draw(m_circle, modifiedStates);
-    target.draw(m_textObj, modifiedStates);
+    target.draw(m_circle, states);
+    target.draw(m_textObj, states);
 }
 
 void TextCircle::setCircleColor(sf::Color color)
