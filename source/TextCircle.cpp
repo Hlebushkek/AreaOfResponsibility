@@ -1,16 +1,24 @@
 #include <iostream>
 #include "../include/TextCircle.hpp"
 
-TextCircle::TextCircle(std::string text, float radius, size_t pointCount)
-    : m_circle(radius, pointCount), m_text(text)
+TextCircle::TextCircle(float radius, size_t pointCount, int int_value, std::string text)
+    : m_circle(radius, pointCount), m_int_value(int_value), m_text(text)
 {
     sf::Font font;
     if (!m_font.loadFromFile("Roboto-Light.ttf"))
         std::cout << "Can't load font" << std::endl;
+    
     m_textObj.setFont(m_font);
     m_textObj.setCharacterSize(15);
-    m_textObj.setString(m_text);
     m_textObj.setFillColor(sf::Color::Black);
+    
+    if (text.empty())
+        m_textObj.setString(std::to_string(int_value));
+    else
+        m_textObj.setString(m_text);
+
+    m_circle.move(-m_circle.getRadius(), -m_circle.getRadius());
+    m_textObj.move(-m_circle.getRadius() / 2., -m_circle.getRadius());
 }
 
 void TextCircle::setPosition(const sf::Vector2f& position)

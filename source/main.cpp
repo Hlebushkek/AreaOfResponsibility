@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "../include/TextCircle.hpp"
 
 const int BASE_POINT_RADIUS = 8;
@@ -17,17 +18,21 @@ enum SIDE { LEFT, RIGHT, OVERLAY };
 
 SIDE determineSide(sf::Vector2f point, float k, float b)
 {
-    sf::Vector2f line = sf::Vector2f(point.x, k * point.x + b);
-    if (k > 0 && point.y < line.y)
+    std::cout << "y = " << k << "x + " << b << std::endl;
+    std::cout << "(" << point.x << "," << point.y << ")" << std::endl;
+
+    float line_y = k * point.x + b;
+
+    if (point.y < line_y)
         return SIDE::RIGHT;
-    else if (k > 0 && point.y > line.y)
+    else if (point.y > line_y)
         return SIDE::LEFT;
-    else if (k < 0 && point.y < line.y)
-        return SIDE::LEFT;
-    else if (k < 0 && point.y > line.y)
-        return SIDE::RIGHT;
 
     return SIDE::OVERLAY;
+}
+
+float distance(sf::Vector2f p1, sf::Vector2f p2) {
+    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
 sf::Vector2f getRandomPoint(const sf::Vector2u& screenSize, const sf::Vector2u& inset)
@@ -35,31 +40,33 @@ sf::Vector2f getRandomPoint(const sf::Vector2u& screenSize, const sf::Vector2u& 
     return sf::Vector2f(rand() % (screenSize.x - inset.x), rand() % (screenSize.y - inset.y));
 }
 
-int calcDiff(const std::vector<TextCircle>& shapes, int k, int b)
+int calcDiff(const std::vector<TextCircle*>& shapes, float k, float b, SIDE onLineAssign = SIDE::OVERLAY)
 {
     int left_sum = 0;
     int right_sum = 0;
 
-    for (auto& shape : shapes)
+    for (auto shape : shapes)
     {
-        SIDE side = determineSide(shape.getPosition(), k, b);
-        std::cout << shape.getText() << " " << side << std::endl;
+        SIDE side = determineSide(shape->getPosition(), k, b);
+        std::cout << "Weight: " << shape->getValue() << "\tside: " << side << std::endl;
 
-        try {
-            switch (side)
-            {
-            case LEFT:
-                left_sum += std::stoi(shape.getText());
-                break;
-            case RIGHT:
-                right_sum += std::stoi(shape.getText());
-                break;
-            default:
-                break;
-            }
-        } catch (const std::invalid_argument& e) {
-            std::cout << "Not a number" << std::endl;
+        switch (side)
+        {
+        case LEFT:
+            left_sum += shape->getValue();
+            break;
+        case RIGHT:
+            right_sum += shape->getValue();
+            break;
+        case OVERLAY:
+            if (onLineAssign == SIDE::LEFT)
+                left_sum += shape->getValue();
+            else if (onLineAssign == SIDE::RIGHT)
+                right_sum += shape->getValue();
+            break;
         }
+
+        std::cout << "Current right: " << right_sum << "\tCurrent left: " << left_sum << std::endl;
     }
 
     std::cout << "Diff: " << abs(left_sum - right_sum) << std::endl;
@@ -70,7 +77,7 @@ int main()
 {
     srand((unsigned)time(0)); 
 
-    sf::Vector2u screenSize(480, 360);
+    sf::Vector2u screenSize(720, 480);
     sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "Coursework");
     std::vector<TextCircle*> shapes;
     
@@ -85,64 +92,62 @@ int main()
     xb = b_pos.x;
     yb = b_pos.y;
 
-    TextCircle* pA = new TextCircle("A", BASE_POINT_RADIUS);
+    TextCircle* pA = new TextCircle(BASE_POINT_RADIUS, 30ULL, 0, "A");
     pA->setPosition(sf::Vector2f(xa, ya));
     pA->setCircleColor(sf::Color::Red);
-    shapes.push_back(pA);
 
-    TextCircle* pB = new TextCircle("B", BASE_POINT_RADIUS);
+    TextCircle* pB = new TextCircle(BASE_POINT_RADIUS, 30ULL, 0, "B");
     pB->setPosition(sf::Vector2f(xb, yb));
     pB->setCircleColor(sf::Color::Red);
-    shapes.push_back(pB);
 
     for (int i = 0; i < n; i++) {
-        w[i] = rand() % W;
-        TextCircle* shape = new TextCircle(std::to_string(w[i]), BASE_POINT_RADIUS);
+        w[i] = rand() % (W - 1) + 1;
+        TextCircle* shape = new TextCircle(BASE_POINT_RADIUS, 30ULL, w[i]);
         shape->setPosition(getRandomPoint(screenSize, inset));
         shape->setCircleColor(sf::Color::Yellow);
         shapes.push_back(shape);
     }
 
-    x[0] = xa; y[0] = ya; w[0] = 0;
-    x[n + 1] = xb; y[n + 1] = yb; w[n + 1] = 0;
-    std::sort(x, x + n + 2);
-    for (int i = 0; i <= n + 1; i++) {
-        for (int j = 0; j <= W; j++) {
-            dp[i][j][0] = dp[i][j][1] = INT_MAX;
+    //Algorithm
+    sf::Vector2f midAB = sf::Vector2f(
+        (pA->getPosition().x + pB->getPosition().x) / 2.f,
+        (pA->getPosition().y + pB->getPosition().y) / 2.f
+    );
+
+    std::cout << "A: " << pA->getPosition().x << " " << pA->getPosition().y << std::endl;
+    std::cout << "B: " << pB->getPosition().x << " " << pB->getPosition().y << std::endl;
+    std::cout << "Mid AB: " << midAB.x << " " << midAB.y << std::endl;
+    
+    int bestResult = INT16_MAX;
+    std::pair<float, float> bestLine = std::make_pair(0, 0);
+
+    for (auto shape : shapes)
+    {
+        sf::Vector2f pos = shape->getPosition();
+        float k = (pos.y - midAB.y) / (pos.x - midAB.x);
+        float b = midAB.y - k * midAB.x;
+        std::cout << "y = " << k << "x + " << b << std::endl;
+
+        int diff1 = calcDiff(shapes, k, b, SIDE::LEFT);
+        int diff2 = calcDiff(shapes, k, b, SIDE::RIGHT);
+
+        int diff = std::min(diff1, diff2);
+
+        if (diff < bestResult)
+        {
+            bestResult = diff;
+            bestLine = std::make_pair(k, b);
         }
     }
-    dp[0][0][0] = dp[0][0][1] = 0;
-    for (int i = 1; i <= n + 1; i++) {
-        for (int j = 0; j <= W; j++) {
-            for (int k = 0; k < i - 1; k++) {
-                int dist = x[i] - x[k];
-                int wsum = 0;
-                for (int l = k + 1; l <= i - 1; l++) {
-                    wsum += w[l];
-                }
-                dp[i][j][0] = std::min(dp[i][j][0], dp[k][j - wsum][0] + dist * std::max(0, wsum - j));
-                dp[i][j][1] = std::min(dp[i][j][1], dp[k][j - wsum][1] + dist * std::max(0, wsum - j));
-            }
-        }
-    }
-    int ans = INT_MAX;
-    for (int j = 0; j <= W; j++) {
-        ans = std::min(ans, dp[n + 1][j][0]);
-        ans = std::min(ans, dp[n + 1][j][1]);
-    }
-    std::cout << ans << std::endl;
 
-    double k = (double)(yb - ya) / (double)(xb - xa);
-    double b = ya - k * xa;
-    std::cout << "y = " << k << "x + " << b << std::endl;
-
-    // calcDiff(shapes, k, b);
+    std::cout << "Best result: " << bestResult <<
+        "\tline: y = " << bestLine.first << "x + " << bestLine.second << std::endl;
 
     // sf::VertexArray result_line { sf::Vector2f(), sf::Vector2f() }
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
-    result_line[0].position = sf::Vector2f(0, b);
+    result_line[0].position = sf::Vector2f(0, bestLine.second);
     result_line[0].color = sf::Color::Green;
-    result_line[1].position = sf::Vector2f(screenSize.x, k * screenSize.x + b);
+    result_line[1].position = sf::Vector2f(screenSize.x, bestLine.first * screenSize.x + bestLine.second);
     result_line[1].color = sf::Color::Green;
 
     while (window.isOpen())
@@ -156,7 +161,11 @@ int main()
 
         window.clear(sf::Color::Blue);
         for (auto& shape : shapes)
+        {
+            window.draw(*pA);
+            window.draw(*pB);
             window.draw(*shape);
+        }
 
         window.draw(result_line);
         window.display();
