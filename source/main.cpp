@@ -6,6 +6,7 @@
 #include "DislocationPoint.hpp"
 #include "TextCircle.hpp"
 #include "GreedyAlgorithmSolver.hpp"
+#include "GeneticAlgorithmSolver.hpp"
 
 const int BASE_POINT_RADIUS = 8;
 
@@ -14,10 +15,6 @@ const int MAXW = 1000;
 
 int n, W;
 int algorithmType;
-
-float distance(sf::Vector2f p1, sf::Vector2f p2) {
-    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
-}
 
 sf::Vector2f getRandomPoint(const sf::Vector2u& screenSize, const sf::Vector2u& inset)
 {
@@ -68,10 +65,9 @@ int main()
         solver = new GreedyAlgorithmSolver();
         break;
     case 1:
-        solver = new GreedyAlgorithmSolver();
+        solver = new GeneticAlgorithmSolver();
         break;
     case 2:
-        solver = new GreedyAlgorithmSolver();
         break;
     default:
         break;
@@ -80,9 +76,9 @@ int main()
     Line bestLine = solver->solve(aModel, bModel, models);
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
-    result_line[0].position = sf::Vector2f(0, bestLine.b);
+    result_line[0].position = sf::Vector2f(0, bestLine.b());
     result_line[0].color = sf::Color::Green;
-    result_line[1].position = sf::Vector2f(screenSize.x, bestLine.k * screenSize.x + bestLine.b);
+    result_line[1].position = sf::Vector2f(screenSize.x, bestLine.k() * screenSize.x + bestLine.b());
     result_line[1].color = sf::Color::Green;
 
     while (window.isOpen())
