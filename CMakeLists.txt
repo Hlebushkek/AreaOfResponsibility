@@ -6,6 +6,7 @@ enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB SOURCES "source/*.cpp" "include/*.hpp")
+include_directories(include)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
