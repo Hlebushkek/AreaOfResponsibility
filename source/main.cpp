@@ -7,6 +7,7 @@
 #include "TextCircle.hpp"
 #include "GreedyAlgorithmSolver.hpp"
 #include "GeneticAlgorithmSolver.hpp"
+#include "DynamicProgrammingSolver.hpp"
 
 const int BASE_POINT_RADIUS = 8;
 
@@ -68,6 +69,7 @@ int main()
         solver = new GeneticAlgorithmSolver();
         break;
     case 2:
+        solver = new DynamicProgrammingSolver();
         break;
     default:
         break;
