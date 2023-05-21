@@ -31,7 +31,11 @@ int main()
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
-    std::cin >> n >> W;
+    std::cout << "Enter number of points:\n";
+    std::cin >> n;
+    std::cout << "Enter max weight:\n";
+    std::cin >> W;
+    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Dynamic):\n";
     std::cin >> algorithmType;
 
     sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
@@ -92,7 +96,7 @@ int main()
                 window.close();
         }
 
-        window.clear(sf::Color::Blue);
+        window.clear(sf::Color::Black);
         for (auto& shape : shapes)
             window.draw(shape);
 
