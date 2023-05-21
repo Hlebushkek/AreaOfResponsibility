@@ -20,7 +20,7 @@ struct Line
 
         float x = point.x + ((static_cast<float>(rand()) / RAND_MAX) - 0.5) * multiplier;
 
-        if      (x < xMin) x = xMin;
+             if (x < xMin) x = xMin;
         else if (x > xMax) x = xMax;
 
         return sf::Vector2f(x, k() * x + b());

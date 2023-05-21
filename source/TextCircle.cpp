@@ -11,11 +11,11 @@ TextCircle::TextCircle(DrawableModel* model, float radius, size_t pointCount)
     m_model = model;
 
     if (m_font.getInfo().family.empty())
-        if (!m_font.loadFromFile("Roboto-Light.ttf"))
+        if (!m_font.loadFromFile("../resources/ARCADECLASSIC.TTF"))
             std::cout << "Can't load font" << std::endl;
 
     m_textObj.setFont(m_font);
-    m_textObj.setCharacterSize(15);
+    m_textObj.setCharacterSize(20);
     m_textObj.setFillColor(sf::Color::Black);
     m_textObj.setString(m_model->getStringValue());
 

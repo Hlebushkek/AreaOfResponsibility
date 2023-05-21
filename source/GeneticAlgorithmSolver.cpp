@@ -6,9 +6,9 @@
 #include "DislocationPoint.hpp"
 #include "GeneticAlgorithmSolver.hpp"
 
-const int POPULATION_SIZE = 500;
+const int POPULATION_SIZE = 100;
 const float SELECTION_RATE = 0.25;
-const int MAX_GENERATIONS = 1000;
+const int MAX_GENERATIONS = 100;
 const float MUTATION_RATE = 2;
 
 bool areAllValuesSimilar(std::vector<int>& values) {
@@ -17,6 +17,13 @@ bool areAllValuesSimilar(std::vector<int>& values) {
             return false;
     
     return true;
+}
+
+void printLines(std::vector<Line>& lines)
+{
+    for (auto& line : lines)
+        std::cout << "StartPoint=(" << line.startPoint.x << "," << line.startPoint.y <<
+            "\tEndPoint=(" << line.endPoint.x << "," << line.endPoint.y << std::endl;
 }
 
 Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
@@ -28,6 +35,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
     std::vector<Line> population = generatePopulation(pA, pB);
 
     for (int generation = 0; generation < MAX_GENERATIONS; generation++) {
+        // printLines(population);
         std::vector<int> fitnessValues(POPULATION_SIZE);
         for (int i = 0; i < POPULATION_SIZE; i++)
             fitnessValues[i] = AORMath::calcDiff(points, population[i], SIDE::LEFT);
@@ -72,9 +80,11 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
             bestLine = bestLines[0];
         }
         
-        // std::cout << "One of the best lines is " << bestLines[0].startPoint.x << "," << bestLines[0].startPoint.y << " "
-            // << bestLines[0].endPoint.x << "," << bestLines[0].endPoint.y << std::endl;
-        std::cout << "Generation " << generation << " - Best Fitness: " << bestFitness << std::endl;
+        // std::cout << "StartPoint=(" << bestLines[0].startPoint.x << "," << bestLines[0].startPoint.y <<
+        //     "\tEndPoint=(" << bestLines[0].endPoint.x << "," << bestLines[0].endPoint.y <<  ") Best Fitness: " << bestFitness << std::endl;
+
+        if (bestResult == 0)
+            break;
     }
     
     std::cout << "Best result: " << bestResult << std::endl; 
