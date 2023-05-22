@@ -87,7 +87,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
             break;
     }
     
-    std::cout << "Best result: " << bestResult << std::endl; 
+    std::cout << "Best result: " << bestResult << "\nWith line: y = " << bestLine.k() << "x + " << bestLine.b() << std::endl;
     return bestLine;
 }
 
