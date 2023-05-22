@@ -6,6 +6,8 @@
 #include "DislocationPoint.hpp"
 #include "AORMath.hpp"
 
+const int DISTANCE_THRESHOLD = 1;
+
 Line DynamicProgrammingSolver::solve(DislocationPoint& pA, DislocationPoint& pB,
 std::vector<DislocationPoint>& shapes)
 {
@@ -25,7 +27,7 @@ std::vector<DislocationPoint>& points, std::pair<int, Line> currentBest)
         std::pow((pB.getPosition().y - pA.getPosition().y), 2));
 
         std::cout<<"Current line length: "<<AB_distance<<std::endl;
-        if (AB_distance <= 1)
+        if (AB_distance <= DISTANCE_THRESHOLD)
             return currentBest; 
 
         sf::Vector2f midAB = sf::Vector2f(
