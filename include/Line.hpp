@@ -1,5 +1,6 @@
 #pragma once
-
+#include <stdlib.h>
+#include <limits.h>
 #include <SFML/System/Vector2.hpp>
 
 struct Line

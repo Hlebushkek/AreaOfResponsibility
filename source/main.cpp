@@ -62,7 +62,7 @@ int main()
         shapes.push_back(shape);
     }
 
-    Solver* solver;
+    Solver* solver = nullptr;
 
     switch (algorithmType)
     {
