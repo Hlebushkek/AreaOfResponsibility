@@ -13,6 +13,7 @@ std::vector<DislocationPoint>& shapes)
 {
     auto dp = DP(pA, pB, shapes, {INT_MAX, {}});
     std::cout<<"Best result: "<<dp.first<<"\n";
+    std::cout<<"Best Line: y = " << dp.second.k() << "x + " << dp.second.b() << "\n";
     return dp.second;
 }
 

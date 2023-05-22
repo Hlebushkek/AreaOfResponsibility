@@ -15,7 +15,7 @@ TextCircle::TextCircle(DrawableModel* model, float radius, size_t pointCount)
             std::cout << "Can't load font" << std::endl;
 
     m_textObj.setFont(m_font);
-    m_textObj.setCharacterSize(20);
+    m_textObj.setCharacterSize(16);
     m_textObj.setFillColor(sf::Color::Black);
     m_textObj.setString(m_model->getStringValue());
 
