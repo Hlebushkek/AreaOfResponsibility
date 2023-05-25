@@ -116,7 +116,7 @@ int main()
 
     file.close();
 
-    system("python ../resources/plot.py output.py");
+    system("python ../resources/plot.py output.csv");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
