@@ -8,7 +8,7 @@
 
 const int POPULATION_SIZE = 100;
 const float SELECTION_RATE = 0.2;
-const int MAX_GENERATIONS = 2000;
+const int MAX_GENERATIONS = 1000;
 const float MUTATION_RATE = 0.6;
 
 bool areAllValuesSimilar(std::vector<int>& values) {

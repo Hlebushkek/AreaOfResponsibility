@@ -49,10 +49,16 @@ int main()
     Line bestLine;
 
     std::ofstream file("../resources/output.csv");
+    std::ofstream fileRes("../resources/outputRes.csv");
     file << "n, greedy, genetic, recursive\n";
+    fileRes << "n, greedy, genetic, recursive\n";
 
     for (int n: nTestSet)
     {
+        float greedyResultSum = 0;
+        float geneticResultSum = 0;
+        float recursiveResultSum = 0;
+
         for (int i = 0; i < 20; i++)
         {
             std::cout << "\nTest set: " << n << " " << i << std::endl;
@@ -97,6 +103,13 @@ int main()
                 );
                 std::cout << "Result: " << result << std::endl;
                 // std::cout << "E: " << (float)result / sum * 100.f << "%" << std::endl;
+                if (solver->getName() == "Greedy Algorithm")
+                    greedyResultSum += (float)result / sum * 100.f;
+                else if (solver->getName() == "Genetic Algorithm")
+                    geneticResultSum += (float)result / sum * 100.f;
+                else if (solver->getName() == "Recursive Algorithm")
+                    recursiveResultSum += (float)result / sum * 100.f;
+                
                 timeSum += time;
             }
         }
@@ -112,9 +125,15 @@ int main()
             }
         }
         file << "\n";
+
+        float avgGreedy = greedyResultSum / 20.f;
+        float avgGenetic = geneticResultSum / 20.f;
+        float avgRecursive = recursiveResultSum / 20.f;
+        fileRes << n << ", " << avgGreedy << ", " << avgGenetic << ", " << avgRecursive << "\n";
     }
 
     file.close();
+    fileRes.close();
 
     system("python ../resources/plot.py output.csv");
 
