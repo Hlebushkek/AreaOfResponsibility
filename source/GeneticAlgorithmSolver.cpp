@@ -6,9 +6,9 @@
 #include "DislocationPoint.hpp"
 #include "GeneticAlgorithmSolver.hpp"
 
-const int POPULATION_SIZE = 100;
+const int POPULATION_SIZE = 20;
 const float SELECTION_RATE = 0.2;
-const int MAX_GENERATIONS = 2000;
+const int MAX_GENERATIONS = 100;
 
 bool areAllValuesSimilar(std::vector<int>& values) {
     for (int i = 1; i < values.size(); i++)

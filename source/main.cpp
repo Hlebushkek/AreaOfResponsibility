@@ -68,10 +68,13 @@ int main()
     Line bestLine;
 
     std::ofstream file("../resources/output.csv");
+    std::ofstream fileRes("../resources/outputRes.csv");
     file << "mr, genetic\n";
+    fileRes << "mr, genetic\n";
 
     for (float mr: mrs)
     {
+        float resSum = 0;
         float timeSum = 0;
         solver = new GeneticAlgorithmSolver(mr);
         
@@ -91,6 +94,7 @@ int main()
             );
             std::cout << "Result: " << result << std::endl;
             // std::cout << "E: " << (float)result / sum * 100.f << "%" << std::endl;
+            resSum += result;
             timeSum += time;
         }
 
@@ -101,11 +105,15 @@ int main()
             file << ", " << avg;
         }
         file << "\n";
+
+        fileRes << mr << ", " << resSum / sum / 20.f * 100.f << "\n";
     }
 
     file.close();
+    fileRes.close();
 
-    system("python ../resources/plot.py output.csv");
+    system("python ../resources/plot.py output.csv 3");
+    system("python ../resources/plot.py outputRes.csv 4");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
