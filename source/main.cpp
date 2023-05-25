@@ -35,7 +35,7 @@ int main()
     std::cin >> n;
     std::cout << "Enter max weight:\n";
     std::cin >> W;
-    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Rescursive):\n";
+    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Recursive):\n";
     std::cin >> algorithmType;
 
     sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
