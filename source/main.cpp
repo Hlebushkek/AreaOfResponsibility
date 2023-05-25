@@ -5,6 +5,8 @@
 #include "Line.hpp"
 #include "DislocationPoint.hpp"
 #include "TextCircle.hpp"
+#include "Timer.hpp"
+#include "AORMath.hpp"
 #include "GreedyAlgorithmSolver.hpp"
 #include "GeneticAlgorithmSolver.hpp"
 #include "DynamicProgrammingSolver.hpp"
@@ -31,55 +33,58 @@ int main()
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
-    std::cout << "Enter number of points:\n";
-    std::cin >> n;
-    std::cout << "Enter max weight:\n";
-    std::cin >> W;
-    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Recursive):\n";
-    std::cin >> algorithmType;
-
-    sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
-    sf::Vector2f b_pos = getRandomPoint(screenSize, inset);
+    int nTestSet[] = {5, 100, 500};
+    int WTestSet[] = {10, 20, 30};
 
     std::vector<DislocationPoint> models;
     std::vector<TextCircle> shapes;
+    Solver* solvers[] = { new GreedyAlgorithmSolver(), new GeneticAlgorithmSolver(), new DynamicProgrammingSolver()};
 
-    DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", true);
-    DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", true);
-    models.push_back(aModel);
-    models.push_back(bModel);
+    Line bestLine;
 
-    for (size_t i = 0; i < n; i++)
+    for (int n: nTestSet)
     {
-        int w = rand() % (W - 1) + 1;
-        sf::Vector2f pos = getRandomPoint(screenSize, inset);
-        models.push_back(DislocationPoint(pos, w));
+        for (int W: WTestSet)
+        {
+            std::cout << "\nTest set: " << n << " " << W << std::endl;
+
+            models.clear();
+            shapes.clear();
+
+            sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
+            sf::Vector2f b_pos = getRandomPoint(screenSize, inset);
+
+            DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", true);
+            DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", true);
+            models.push_back(aModel);
+            models.push_back(bModel);
+
+            for (size_t i = 0; i < n; i++)
+            {
+                int w = rand() % (W - 1) + 1;
+                sf::Vector2f pos = getRandomPoint(screenSize, inset);
+                models.push_back(DislocationPoint(pos, w));
+            }
+
+            for (size_t i = 0; i < models.size(); i++)
+            {
+                TextCircle shape = TextCircle(&models[i], BASE_POINT_RADIUS);
+                shapes.push_back(shape);
+            }
+
+            for (auto& solver : solvers)
+            {
+                Timer t;
+                bestLine = solver->solve(aModel, bModel, models);
+                std::cout << "Time elapsed: " << t.elapsed() << std::endl;
+                std::cout << "Line: " << bestLine << std::endl; 
+                std::cout << "Result: " << std::min(
+                    AORMath::calcDiff(models, bestLine, SIDE::LEFT),
+                    AORMath::calcDiff(models, bestLine, SIDE::RIGHT)
+                ) << std::endl; 
+            }
+        }
     }
-
-    for (size_t i = 0; i < models.size(); i++)
-    {
-        TextCircle shape = TextCircle(&models[i], BASE_POINT_RADIUS);
-        shapes.push_back(shape);
-    }
-
-    Solver* solver = nullptr;
-
-    switch (algorithmType)
-    {
-    case 0:
-        solver = new GreedyAlgorithmSolver();
-        break;
-    case 1:
-        solver = new GeneticAlgorithmSolver();
-        break;
-    case 2:
-        solver = new DynamicProgrammingSolver();
-        break;
-    default:
-        break;
-    }
-
-    Line bestLine = solver->solve(aModel, bModel, models);
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());

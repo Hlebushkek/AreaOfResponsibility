@@ -7,7 +7,6 @@ sf::Font TextCircle::m_font;
 TextCircle::TextCircle(DrawableModel* model, float radius, size_t pointCount)
     : m_circle(radius, pointCount)
 {
-    std::cout << "TextCircle init" << std::endl;
     m_model = model;
 
     if (m_font.getInfo().family.empty())

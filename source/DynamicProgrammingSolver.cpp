@@ -6,14 +6,14 @@
 #include "DislocationPoint.hpp"
 #include "AORMath.hpp"
 
-const int DISTANCE_THRESHOLD = 1;
+const int DISTANCE_THRESHOLD = 2;
 
 Line DynamicProgrammingSolver::solve(DislocationPoint& pA, DislocationPoint& pB,
 std::vector<DislocationPoint>& shapes)
 {
     auto dp = DP(pA, pB, shapes, {INT_MAX, {}});
-    std::cout<<"Best result: "<<dp.first<<"\n";
-    std::cout<<"Best Line: y = " << dp.second.k() << "x + " << dp.second.b() << "\n";
+    // std::cout<<"Best result: "<<dp.first<<"\n";
+    // std::cout<<"Best Line: y = " << dp.second.k() << "x + " << dp.second.b() << "\n";
     return dp.second;
 }
 
@@ -52,8 +52,6 @@ std::vector<DislocationPoint>& points, std::pair<int, Line> currentBest)
             bestLine = line;
         }
     }
-
-    std::cout<<"Current best line: y = "<<bestLine.k()<<"x + "<<bestLine.b()<<std::endl;
 
     if (bestResult < currentBest.first)
         currentBest = {bestResult, bestLine};

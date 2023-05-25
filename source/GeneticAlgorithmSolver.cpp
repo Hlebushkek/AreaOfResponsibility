@@ -7,9 +7,9 @@
 #include "GeneticAlgorithmSolver.hpp"
 
 const int POPULATION_SIZE = 100;
-const float SELECTION_RATE = 0.25;
-const int MAX_GENERATIONS = 100;
-const float MUTATION_RATE = 2;
+const float SELECTION_RATE = 0.2;
+const int MAX_GENERATIONS = 2000;
+const float MUTATION_RATE = 2.5;
 
 bool areAllValuesSimilar(std::vector<int>& values) {
     for (int i = 1; i < values.size(); i++)
@@ -42,7 +42,6 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
 
         if (areAllValuesSimilar(fitnessValues))
         {
-            std::cout << "Regenerate" << std::endl;
             population = generatePopulation(pA, pB);
             continue;
         }
@@ -87,7 +86,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
             break;
     }
     
-    std::cout << "Best result: " << bestResult << "\nWith line: y = " << bestLine.k() << "x + " << bestLine.b() << std::endl;
+    // std::cout << "Best result: " << bestResult << "\nWith line: y = " << bestLine.k() << "x + " << bestLine.b() << std::endl;
     return bestLine;
 }
 

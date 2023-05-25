@@ -18,7 +18,6 @@ Line GreedyAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, st
     {
         sf::Vector2f pos = point.getPosition();
         Line line(midAB, pos);
-        std::cout << "y = " << line.k() << "x + " << line.b() << std::endl;
 
         int diff1 = AORMath::calcDiff(points, line, SIDE::LEFT);
         int diff2 = AORMath::calcDiff(points, line, SIDE::RIGHT);
@@ -31,9 +30,6 @@ Line GreedyAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, st
             bestLine = line;
         }
     }
-
-    std::cout << "Best result: " << bestResult <<
-        "\tline: y = " << bestLine.k() << "x + " << bestLine.b() << std::endl;
     
     return bestLine;
 }
