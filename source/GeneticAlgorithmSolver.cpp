@@ -9,7 +9,7 @@
 const int POPULATION_SIZE = 100;
 const float SELECTION_RATE = 0.2;
 const int MAX_GENERATIONS = 2000;
-const float MUTATION_RATE = 2.5;
+const float MUTATION_RATE = 0.6;
 
 bool areAllValuesSimilar(std::vector<int>& values) {
     for (int i = 1; i < values.size(); i++)
@@ -109,12 +109,12 @@ void GeneticAlgorithmSolver::mutate(Line &line, Line &abLine)
     if (static_cast<float>(rand()) / RAND_MAX < MUTATION_RATE)
     {
         line.startPoint = abLine.randomlyMovePointAlongLine(
-            line.startPoint, MUTATION_RATE,
+            line.startPoint, (static_cast<float>(rand()) / RAND_MAX - 0.5f),
             abLine.startPoint.x, abLine.endPoint.x
         );
 
-        line.endPoint.x += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * MUTATION_RATE;
-        line.endPoint.y += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * MUTATION_RATE;
+        line.endPoint.x += (static_cast<float>(rand()) / RAND_MAX - 0.5f);
+        line.endPoint.y += (static_cast<float>(rand()) / RAND_MAX - 0.5f);
     }
 }
 
@@ -130,4 +130,9 @@ Line GeneticAlgorithmSolver::crossover(const Line &parent1, const Line &parent2,
     offspring.endPoint.y = parent1.endPoint.y + crossoverPoint * (parent2.endPoint.y - parent1.endPoint.y);
 
     return offspring;
+}
+
+std::string GeneticAlgorithmSolver::getName()
+{
+    return "Genetic Algorithm";
 }
