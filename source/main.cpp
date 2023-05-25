@@ -33,8 +33,8 @@ int main()
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
-    int nTestSet[] = {5, 100, 500};
-    int WTestSet[] = {10, 20, 30};
+    int nTestSet[] = {5, 50, 100, 500};
+    int WTestSet[] = {10, 20, 50, 100};
 
     std::vector<DislocationPoint> models;
     std::vector<TextCircle> shapes;
