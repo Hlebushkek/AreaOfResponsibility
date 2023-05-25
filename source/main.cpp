@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <fstream>
 #include "Line.hpp"
 #include "DislocationPoint.hpp"
 #include "TextCircle.hpp"
@@ -47,6 +48,9 @@ int main()
 
     Line bestLine;
 
+    std::ofstream file("../resources/output.csv");
+    file << "n, greedy, genetic, recursive\n";
+
     for (int n: nTestSet)
     {
         for (int i = 0; i < 20; i++)
@@ -64,11 +68,13 @@ int main()
             models.push_back(aModel);
             models.push_back(bModel);
 
+            int sum = 0;
             for (size_t j = 0; j < n; j++)
             {
                 int w = rand() % (W - 1) + 1;
                 sf::Vector2f pos = getRandomPoint(screenSize, inset);
                 models.push_back(DislocationPoint(pos, w));
+                sum += w;
             }
 
             for (size_t j = 0; j < models.size(); j++)
@@ -90,16 +96,27 @@ int main()
                     AORMath::calcDiff(models, bestLine, SIDE::RIGHT)
                 );
                 std::cout << "Result: " << result << std::endl;
+                // std::cout << "E: " << (float)result / sum * 100.f << "%" << std::endl;
                 timeSum += time;
             }
         }
 
-        for (auto& [solver, timeSum] : solvers)
+        file << n;
         {
-            std::cout << solver->getName() << " average time: " << timeSum / 20 << std::endl;
-            timeSum = 0;
+            for (auto& [solver, timeSum] : solvers)
+            {
+                float avg = timeSum / 20;
+                std::cout << solver->getName() << " average time: " << avg << std::endl;
+                file << ", " << avg;
+                timeSum = 0;
+            }
         }
+        file << "\n";
     }
+
+    file.close();
+
+    system("python ../resources/plot.py plot.py");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
