@@ -34,82 +34,71 @@ int main()
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
-    int nTestSet[] = {5, 50, 100, 500};
+    n = 50;
     W = 10;
+    float mrs[] = {0.2f, 0.4f, 0.6f, 0.8f};
 
     std::vector<DislocationPoint> models;
     std::vector<TextCircle> shapes;
 
-    std::vector<std::pair<Solver*, float>> solvers = {
-        {new GreedyAlgorithmSolver(), 0.f},
-        {new GeneticAlgorithmSolver(), 0.f},
-        {new DynamicProgrammingSolver(), 0.f}
-    };
+    sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
+    sf::Vector2f b_pos = getRandomPoint(screenSize, inset);
 
+    DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", true);
+    DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", true);
+    models.push_back(aModel);
+    models.push_back(bModel);
+
+    int sum = 0;
+    for (size_t j = 0; j < n; j++)
+    {
+        int w = rand() % (W - 1) + 1;
+        sf::Vector2f pos = getRandomPoint(screenSize, inset);
+        models.push_back(DislocationPoint(pos, w));
+        sum += w;
+    }
+
+    for (size_t j = 0; j < models.size(); j++)
+    {
+        TextCircle shape = TextCircle(&models[j], BASE_POINT_RADIUS);
+        shapes.push_back(shape);
+    }
+
+    Solver* solver;
     Line bestLine;
 
     std::ofstream file("../resources/output.csv");
-    file << "n, greedy, genetic, recursive\n";
+    file << "mr, genetic\n";
 
-    for (int n: nTestSet)
+    for (float mr: mrs)
     {
+        float timeSum = 0;
+        solver = new GeneticAlgorithmSolver(mr);
+        
         for (int i = 0; i < 20; i++)
         {
-            std::cout << "\nTest set: " << n << " " << i << std::endl;
+            std::cout << "\nTest set: " << mr << " " << i << std::endl;
+        
+            Timer t;
+            bestLine = solver->solve(aModel, bModel, models);
+            float time = t.elapsed();
+            std::cout << "Time elapsed: " << time << std::endl;
+            std::cout << "Line: " << bestLine << std::endl;
 
-            models.clear();
-            shapes.clear();
-
-            sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
-            sf::Vector2f b_pos = getRandomPoint(screenSize, inset);
-
-            DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", true);
-            DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", true);
-            models.push_back(aModel);
-            models.push_back(bModel);
-
-            int sum = 0;
-            for (size_t j = 0; j < n; j++)
-            {
-                int w = rand() % (W - 1) + 1;
-                sf::Vector2f pos = getRandomPoint(screenSize, inset);
-                models.push_back(DislocationPoint(pos, w));
-                sum += w;
-            }
-
-            for (size_t j = 0; j < models.size(); j++)
-            {
-                TextCircle shape = TextCircle(&models[j], BASE_POINT_RADIUS);
-                shapes.push_back(shape);
-            }
-            
-            for (auto& [solver, timeSum] : solvers)
-            {
-                Timer t;
-                bestLine = solver->solve(aModel, bModel, models);
-                float time = t.elapsed();
-                std::cout << "Time elapsed: " << time << std::endl;
-                std::cout << "Line: " << bestLine << std::endl;
-
-                int result = std::min(
-                    AORMath::calcDiff(models, bestLine, SIDE::LEFT),
-                    AORMath::calcDiff(models, bestLine, SIDE::RIGHT)
-                );
-                std::cout << "Result: " << result << std::endl;
-                // std::cout << "E: " << (float)result / sum * 100.f << "%" << std::endl;
-                timeSum += time;
-            }
+            int result = std::min(
+                AORMath::calcDiff(models, bestLine, SIDE::LEFT),
+                AORMath::calcDiff(models, bestLine, SIDE::RIGHT)
+            );
+            std::cout << "Result: " << result << std::endl;
+            // std::cout << "E: " << (float)result / sum * 100.f << "%" << std::endl;
+            timeSum += time;
         }
 
-        file << n;
+        file << mr;
         {
-            for (auto& [solver, timeSum] : solvers)
-            {
-                float avg = timeSum / 20;
-                std::cout << solver->getName() << " average time: " << avg << std::endl;
-                file << ", " << avg;
-                timeSum = 0;
-            }
+            float avg = timeSum / 20;
+            std::cout << solver->getName() << " average time: " << avg << std::endl;
+            file << ", " << avg;
         }
         file << "\n";
     }

@@ -9,7 +9,6 @@
 const int POPULATION_SIZE = 100;
 const float SELECTION_RATE = 0.2;
 const int MAX_GENERATIONS = 2000;
-const float MUTATION_RATE = 0.6;
 
 bool areAllValuesSimilar(std::vector<int>& values) {
     for (int i = 1; i < values.size(); i++)
@@ -106,7 +105,7 @@ std::vector<Line> GeneticAlgorithmSolver::generatePopulation(DislocationPoint& p
 
 void GeneticAlgorithmSolver::mutate(Line &line, Line &abLine)
 {
-    if (static_cast<float>(rand()) / RAND_MAX < MUTATION_RATE)
+    if (static_cast<float>(rand()) / RAND_MAX < this->mr)
     {
         line.startPoint = abLine.randomlyMovePointAlongLine(
             line.startPoint, (static_cast<float>(rand()) / RAND_MAX - 0.5f),
