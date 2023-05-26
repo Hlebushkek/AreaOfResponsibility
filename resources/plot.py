@@ -34,7 +34,7 @@ plt.plot(n_values, greedy_values, label='Жадібний')
 plt.plot(n_values, genetic_values, label='Генетичний')
 plt.plot(n_values, recursive_values, label='Рекурсивний')
 
-if sys.argv[2] == 0:
+if sys.argv[2] == '0':
     plt.xlabel('Кількість ворожих пунктів')
     plt.ylabel('Час роботи в секундах')
     plt.title('Залежність часу роботи алгоритмів від кількості ворожих пунктів')
