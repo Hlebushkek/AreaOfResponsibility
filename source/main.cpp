@@ -118,7 +118,7 @@ int main()
         {
             for (auto& [solver, timeSum] : solvers)
             {
-                float avg = timeSum / 20;
+                float avg = timeSum / 20.f;
                 std::cout << solver->getName() << " average time: " << avg << std::endl;
                 file << ", " << avg;
                 timeSum = 0;
