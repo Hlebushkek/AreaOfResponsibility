@@ -112,8 +112,8 @@ int main()
     file.close();
     fileRes.close();
 
-    system("python ../resources/plot.py output.csv 3");
-    system("python ../resources/plot.py outputRes.csv 4");
+    system("py ../resources/plot.py ../resources/output.csv 0");
+    system("py ../resources/plot.py ../resources/outputRes.csv 1");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
