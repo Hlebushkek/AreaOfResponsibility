@@ -44,8 +44,8 @@ int main()
     std::vector<DislocationPoint> models;
     std::vector<TextCircle> shapes;
 
-    DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", true);
-    DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", true);
+    DislocationPoint aModel = DislocationPoint(a_pos, 0, "A", DislocationPoint::PointType::A);
+    DislocationPoint bModel = DislocationPoint(b_pos, 0, "B", DislocationPoint::PointType::B);
     models.push_back(aModel);
     models.push_back(bModel);
 
@@ -83,9 +83,9 @@ int main()
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
-    result_line[0].color = sf::Color::Green;
+    result_line[0].color = sf::Color::Red;
     result_line[1].position = sf::Vector2f(screenSize.x, bestLine.k() * screenSize.x + bestLine.b());
-    result_line[1].color = sf::Color::Green;
+    result_line[1].color = sf::Color::Red;
 
     while (window.isOpen())
     {
@@ -96,7 +96,7 @@ int main()
                 window.close();
         }
 
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::White);
         for (auto& shape : shapes)
             window.draw(shape);
 
