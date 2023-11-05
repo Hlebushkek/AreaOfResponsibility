@@ -3,28 +3,20 @@
 #include <iostream>
 #include <cmath>
 #include "Line.hpp"
+#include "Utils.hpp"
 #include "DislocationPoint.hpp"
 #include "TextCircle.hpp"
 #include "GreedyAlgorithmSolver.hpp"
 #include "GeneticAlgorithmSolver.hpp"
+#include "GeneticAlgorithmAdvancedSolver.hpp"
 #include "DynamicProgrammingSolver.hpp"
-
-const int BASE_POINT_RADIUS = 8;
-
-const int MAXN = 1000;
-const int MAXW = 1000;
-
-int n, W;
-int algorithmType;
-
-sf::Vector2f getRandomPoint(const sf::Vector2u& screenSize, const sf::Vector2u& inset)
-{
-    return sf::Vector2f(rand() % (screenSize.x - inset.x), rand() % (screenSize.y - inset.y));
-}
 
 int main()
 {
-    srand((unsigned)time(0)); 
+    srand((unsigned)time(0));
+
+    int n, W;
+    int algorithmType; 
 
     sf::Vector2u screenSize(720, 480);
     sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "Coursework");
@@ -35,7 +27,7 @@ int main()
     std::cin >> n;
     std::cout << "Enter max weight:\n";
     std::cin >> W;
-    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Recursive):\n";
+    std::cout << "Enter algorithm (0 - Greedy, 1 - Genetic, 2 - Advanced Genetic, 3 - Recursive):\n";
     std::cin >> algorithmType;
 
     sf::Vector2f a_pos = getRandomPoint(screenSize, inset);
@@ -73,6 +65,9 @@ int main()
         solver = new GeneticAlgorithmSolver();
         break;
     case 2:
+        solver = new GeneticAlgorithmAdvancedSolver();
+        break;
+    case 3:
         solver = new DynamicProgrammingSolver();
         break;
     default:

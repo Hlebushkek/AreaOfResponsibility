@@ -5,19 +5,20 @@
 #include "Line.hpp"
 #include "DislocationPoint.hpp"
 #include "Utils.hpp"
-#include "GeneticAlgorithmSolver.hpp"
+#include "GeneticAlgorithmAdvancedSolver.hpp"
 
-const int MAX_GENERATIONS = 100;
+const int MAX_CYCLES_WITHOUT_CHANGES = 50;
 
-Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
+Line GeneticAlgorithmAdvancedSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
 {
     Line abLine(pA.getPosition(), pB.getPosition());
     Line bestLine;
     int bestResult = INT_MAX;
+    int iterationsWithoutChanges = 0;
 
     std::vector<Line> population = generatePopulation(pA, pB);
 
-    for (int generation = 0; generation < MAX_GENERATIONS; generation++) {
+    while (iterationsWithoutChanges < MAX_CYCLES_WITHOUT_CHANGES) {
         // printLines(population);
         std::vector<int> fitnessValues(POPULATION_SIZE);
         for (int i = 0; i < POPULATION_SIZE; i++)
@@ -59,6 +60,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
         int bestFitness = AORMath::calcDiff(points, bestLines[0], SIDE::LEFT);
         if (bestFitness < bestResult)
         {
+            iterationsWithoutChanges = 0;
             bestResult = bestFitness;
             bestLine = bestLines[0];
         }
@@ -66,6 +68,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
         // std::cout << "StartPoint=(" << bestLines[0].startPoint.x << "," << bestLines[0].startPoint.y <<
         //     "\tEndPoint=(" << bestLines[0].endPoint.x << "," << bestLines[0].endPoint.y <<  ") Best Fitness: " << bestFitness << std::endl;
 
+        iterationsWithoutChanges++;
         if (bestResult == 0)
             break;
     }
@@ -74,7 +77,7 @@ Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, s
     return bestLine;
 }
 
-std::vector<Line> GeneticAlgorithmSolver::generatePopulation(DislocationPoint& pA, DislocationPoint& pB)
+std::vector<Line> GeneticAlgorithmAdvancedSolver::generatePopulation(DislocationPoint& pA, DislocationPoint& pB)
 {
     Line abLine(pA.getPosition(), pB.getPosition());
     
@@ -88,7 +91,7 @@ std::vector<Line> GeneticAlgorithmSolver::generatePopulation(DislocationPoint& p
     return population;
 }
 
-void GeneticAlgorithmSolver::mutate(Line &line, Line &abLine)
+void GeneticAlgorithmAdvancedSolver::mutate(Line &line, Line &abLine)
 {
     if (static_cast<float>(rand()) / RAND_MAX < MUTATION_RATE)
     {
@@ -102,7 +105,7 @@ void GeneticAlgorithmSolver::mutate(Line &line, Line &abLine)
     }
 }
 
-Line GeneticAlgorithmSolver::crossover(const Line &parent1, const Line &parent2, Line& abLine)
+Line GeneticAlgorithmAdvancedSolver::crossover(const Line &parent1, const Line &parent2, Line& abLine)
 {
     Line offspring;
     float crossoverPoint = static_cast<float>(rand()) / RAND_MAX;
@@ -116,7 +119,7 @@ Line GeneticAlgorithmSolver::crossover(const Line &parent1, const Line &parent2,
     return offspring;
 }
 
-std::string GeneticAlgorithmSolver::getName()
+std::string GeneticAlgorithmAdvancedSolver::getName()
 {
-    return "Genetic Algorithm";
+    return "Advanced Genetic Algorithm";
 }

@@ -6,9 +6,13 @@ enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB SOURCES "source/*.cpp" "include/*.hpp")
+file(GLOB MAIN_SRC "source/main.cpp" "source/main_tests.cpp")
+list(REMOVE_ITEM SOURCES ${MAIN_SRC})
 include_directories(include)
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} "source/main.cpp" ${SOURCES})
+add_executable(${PROJECT_NAME}_tests "source/main_tests.cpp" ${SOURCES})
 
 add_subdirectory(SFML)
 target_link_libraries(${PROJECT_NAME} sfml-graphics)
+target_link_libraries(${PROJECT_NAME}_tests sfml-graphics)

@@ -37,3 +37,8 @@ Line GreedyAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, st
     
     return bestLine;
 }
+
+std::string GreedyAlgorithmSolver::getName()
+{
+    return "Greedy Algorithm";
+}

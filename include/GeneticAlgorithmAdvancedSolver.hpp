@@ -2,7 +2,7 @@
 
 #include "Solver.hpp"
 
-class GeneticAlgorithmSolver : public Solver
+class GeneticAlgorithmAdvancedSolver : public Solver
 {
 public:
     Line solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points) override;

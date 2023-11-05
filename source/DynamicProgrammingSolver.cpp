@@ -63,3 +63,8 @@ std::vector<DislocationPoint>& points, std::pair<int, Line> currentBest)
 
     return (leftResult.first < rightResult.first) ?  leftResult : rightResult;
 }
+
+std::string DynamicProgrammingSolver::getName()
+{
+    return "Recursive Algorithm";
+}
