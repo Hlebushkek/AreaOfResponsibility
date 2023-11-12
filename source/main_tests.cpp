@@ -132,8 +132,10 @@ int main()
     file.close();
     fileRes.close();
 
-    system("py ../resources/plot.py ../resources/output.csv 0");
-    system("py ../resources/plot.py ../resources/outputRes.csv 1");
+    system("py ../resources/plot.py ../resources/output.csv all 0");
+    system("py ../resources/plot.py ../resources/outputRes.csv all 1");
+    //system("py ../resources/plot.py ../resources/outputRes.csv genetic 0");
+    //system("py ../resources/plot.py ../resources/outputRes.csv genetic 1");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
     result_line[0].position = sf::Vector2f(0, bestLine.b());
