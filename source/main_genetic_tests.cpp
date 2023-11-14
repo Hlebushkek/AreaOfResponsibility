@@ -126,7 +126,11 @@ int main()
         }
         file << "\n";
 
-        fileRes << mr << ", " << resSum / sum / 20.f * 100.f << ", " << resAdvancedSum / sum / 20.f * 100.f << "\n";
+         fileRes << mr << ", ";
+        if (sum % 2 == 0)
+            fileRes << resSum / 20.f << ", " << resAdvancedSum / 20.f << "\n";
+        else
+            fileRes << resSum / 20.f - 1 << ", " << resAdvancedSum / 20.f - 1 << "\n";
     }
 
     file.close();
