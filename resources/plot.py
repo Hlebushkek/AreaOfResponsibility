@@ -69,16 +69,16 @@ elif sys.argv[2] == "genetic":
             genetic_values.append(genetic)
             genetic_advanced_values.append(genetic_advanced)
 
-    plt.plot(mr_values, genetic_values)
-    plt.plot(mr_values, genetic_advanced_values)
+    plt.plot(mr_values, genetic_values, label='GA1')
+    plt.plot(mr_values, genetic_advanced_values, label='GA2')
 
     plt.xlabel('Δ')
 
     if sys.argv[3] == '0':
         plt.ylabel('Час роботи')
-        plt.title('Залежність часу роботи алгоритму GA2 від зміни параметру Δ')
+        plt.title('Залежність часу роботи алгоритмів GA від зміни параметру Δ')
     else:
         plt.ylabel("Похибка результату роботи")
-        plt.title('Залежність похибки результату роботи алгоритму GA2 від зміни параметру Δ')
+        plt.title('Залежність похибки результату роботи алгоритмів GA від зміни параметру Δ')
 
     plt.show()
