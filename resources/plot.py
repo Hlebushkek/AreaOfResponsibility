@@ -36,7 +36,7 @@ if sys.argv[2] == 'all':
 
     plt.plot(n_values, greedy_values, label='EA1')
     plt.plot(n_values, genetic_values, label='GA1')
-    plt.plot(n_values, genetic_advanced, label='GA2')
+    plt.plot(n_values, genetic_advanced_values, label='GA2')
     plt.plot(n_values, recursive_values, label='EA2')
 
     if sys.argv[3] == '0':
