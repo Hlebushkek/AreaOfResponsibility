@@ -132,7 +132,7 @@ int main()
     file.close();
     fileRes.close();
 
-    system("py ../resources/plot.py ../resources/outputRes.csv genetic 0");
+    system("py ../resources/plot.py ../resources/output.csv genetic 0");
     system("py ../resources/plot.py ../resources/outputRes.csv genetic 1");
 
     sf::VertexArray result_line(sf::PrimitiveType::Lines, 2);
