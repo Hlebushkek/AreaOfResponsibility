@@ -54,6 +54,7 @@ if sys.argv[2] == 'all':
 elif sys.argv[2] == "genetic":
     mr_values = []
     genetic_values = []
+    genetic_advanced_values = []
 
     with open(csv_path, 'r') as file:
         reader = csv.reader(file)
@@ -62,11 +63,14 @@ elif sys.argv[2] == "genetic":
         for row in reader:
             mr = float(row[0])
             genetic = float(row[1])
+            genetic_advanced = float(row[2])
 
             mr_values.append(mr)
             genetic_values.append(genetic)
+            genetic_advanced_values.append(genetic_advanced)
 
     plt.plot(mr_values, genetic_values)
+    plt.plot(mr_values, genetic_advanced_values)
 
     plt.xlabel('Δ')
 

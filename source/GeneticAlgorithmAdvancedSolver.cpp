@@ -93,15 +93,15 @@ std::vector<Line> GeneticAlgorithmAdvancedSolver::generatePopulation(Dislocation
 
 void GeneticAlgorithmAdvancedSolver::mutate(Line &line, Line &abLine)
 {
-    if (static_cast<float>(rand()) / RAND_MAX < MUTATION_RATE)
+    if (static_cast<float>(rand()) / RAND_MAX < mr)
     {
         line.startPoint = abLine.randomlyMovePointAlongLine(
-            line.startPoint, MUTATION_RATE,
+            line.startPoint, mr,
             abLine.startPoint.x, abLine.endPoint.x
         );
 
-        line.endPoint.x += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * MUTATION_RATE;
-        line.endPoint.y += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * MUTATION_RATE;
+        line.endPoint.x += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * mr;
+        line.endPoint.y += (static_cast<float>(rand()) / RAND_MAX - 0.5f) * mr;
     }
 }
 
