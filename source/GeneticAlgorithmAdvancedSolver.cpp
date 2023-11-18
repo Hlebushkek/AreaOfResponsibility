@@ -7,7 +7,7 @@
 #include "Utils.hpp"
 #include "GeneticAlgorithmAdvancedSolver.hpp"
 
-const int MAX_CYCLES_WITHOUT_CHANGES = 50;
+const int MAX_CYCLES_WITHOUT_CHANGES = 20;
 
 Line GeneticAlgorithmAdvancedSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
 {

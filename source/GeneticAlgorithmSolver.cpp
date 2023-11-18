@@ -7,7 +7,7 @@
 #include "Utils.hpp"
 #include "GeneticAlgorithmSolver.hpp"
 
-const int MAX_GENERATIONS = 100;
+const int MAX_GENERATIONS = 50;
 
 Line GeneticAlgorithmSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
 {
