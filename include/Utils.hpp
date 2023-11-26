@@ -7,9 +7,9 @@ const int BASE_POINT_RADIUS = 8;
 const int MAXN = 1000;
 const int MAXW = 1000;
 
-const int POPULATION_SIZE = 100;
-const float SELECTION_RATE = 0.25;
-const float MUTATION_RATE = 2;
+const int POPULATION_SIZE = 20;
+const float SELECTION_RATE = 0.2;
+const float MUTATION_RATE = 0.5;
 
 struct Line;
 

@@ -27,7 +27,7 @@ int main()
     
     sf::Vector2u inset(BASE_POINT_RADIUS, BASE_POINT_RADIUS);
 
-    int nTestSet[] = {5, 50, 100, 250};
+    int nTestSet[] = {5, 50, 100, 200};
     W = 10;
 
     std::vector<DislocationPoint> models;
@@ -47,6 +47,8 @@ int main()
     file << "n, greedy, genetic, advanced_genetic, recursive\n";
     fileRes << "n, greedy, genetic, advanced_genetic, recursive\n";
 
+    int cycles = 75;
+
     for (int n: nTestSet)
     {
         float greedyResultSum = 0;
@@ -54,7 +56,7 @@ int main()
         float advancedGeneticResultSum = 0;
         float recursiveResultSum = 0;
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < cycles; i++)
         {
             std::cout << "\nTest set: " << n << " " << i << std::endl;
 
@@ -114,7 +116,7 @@ int main()
         {
             for (auto& [solver, timeSum] : solvers)
             {
-                float avg = timeSum / 20.f;
+                float avg = timeSum / cycles;
                 std::cout << solver->getName() << " average time: " << avg << std::endl;
                 file << ", " << avg;
                 timeSum = 0;
@@ -122,10 +124,10 @@ int main()
         }
         file << "\n";
 
-        float avgGreedy = greedyResultSum / 20.f;
-        float avgGenetic = geneticResultSum / 20.f;
-        float avgAdvancedGenetic = advancedGeneticResultSum / 20.f;
-        float avgRecursive = recursiveResultSum / 20.f;
+        float avgGreedy = greedyResultSum / cycles;
+        float avgGenetic = geneticResultSum / cycles;
+        float avgAdvancedGenetic = advancedGeneticResultSum / cycles;
+        float avgRecursive = recursiveResultSum / cycles;
         fileRes << n << ", " << avgGreedy << ", " << avgGenetic << ", "<< avgAdvancedGenetic << ", " << avgRecursive << "\n";
     }
 

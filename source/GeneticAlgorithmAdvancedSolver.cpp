@@ -7,7 +7,7 @@
 #include "Utils.hpp"
 #include "GeneticAlgorithmAdvancedSolver.hpp"
 
-const int MAX_CYCLES_WITHOUT_CHANGES = 20;
+const int MAX_CYCLES_WITHOUT_CHANGES = 50;
 
 Line GeneticAlgorithmAdvancedSolver::solve(DislocationPoint& pA, DislocationPoint& pB, std::vector<DislocationPoint>& points)
 {
@@ -23,13 +23,6 @@ Line GeneticAlgorithmAdvancedSolver::solve(DislocationPoint& pA, DislocationPoin
         std::vector<int> fitnessValues(POPULATION_SIZE);
         for (int i = 0; i < POPULATION_SIZE; i++)
             fitnessValues[i] = AORMath::calcDiff(points, population[i], SIDE::LEFT);
-
-        if (areAllValuesSimilar(fitnessValues))
-        {
-            std::cout << "Regenerate" << std::endl;
-            population = generatePopulation(pA, pB);
-            continue;
-        }
 
         int N = POPULATION_SIZE * SELECTION_RATE;
         std::partial_sort(population.begin(), population.begin() + N, population.end(),
